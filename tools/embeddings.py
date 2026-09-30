@@ -181,8 +181,8 @@ class GeminiEmbeddings(EmbeddingProvider):
 
     @property
     def dimension(self) -> int:
-        # gemini-embedding-001 produces 768-dimensional embeddings
-        return 768
+        # gemini-embedding-001 produces 3072-dimensional embeddings
+        return 3072
 
     @property
     def model_name(self) -> str:
