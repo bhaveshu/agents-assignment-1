@@ -5,7 +5,7 @@ description = "Multi-agent Research & Report Crew for UCLA Agentic AI course"
 requires-python = ">=3.11"
 
 dependencies = [
-  "crewai>=0.28.0",
+  "crewai[google-genai]>=0.28.0",
   "crewai-tools>=0.1.0",
   "chromadb>=0.4.0",
   "pymupdf>=1.23.0",

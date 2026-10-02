@@ -21,7 +21,6 @@ data/processed/*
 # PDF papers (included in repo for student convenience)
 
 # Outputs
-outputs/*
 !outputs/.gitkeep
 
 # Python
