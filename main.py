@@ -11,7 +11,7 @@ Examples:
     python main.py "What are the current approaches to reducing hallucinations in LLMs?"
     python main.py "How do multi-agent systems coordinate and communicate?"
 
-TODO: This file is mostly complete. You may customize it if needed,
+DONE: This file is mostly complete. You may customize it if needed,
 but the main work is in agents/, tasks/, and crew.py.
 """
 
@@ -22,14 +22,14 @@ from pathlib import Path
 
 # Load environment variables BEFORE importing crewai
 from dotenv import load_dotenv
-load_dotenv()
+
+load_dotenv(override=True)
 
 from rich.console import Console
-from rich.panel import Panel
 from rich.markdown import Markdown
+from rich.panel import Panel
 
 from crew import run_research
-
 
 console = Console()
 
@@ -61,12 +61,14 @@ def save_report(report: str, question: str) -> Path:
 
 def run_interactive():
     """Run in interactive mode, prompting for question."""
-    console.print(Panel(
-        "[bold blue]Research & Report Crew[/bold blue]\n\n"
-        "This tool will search a corpus of 15 foundational AI agent papers\n"
-        "and generate a literature review on your research question.",
-        title="Welcome"
-    ))
+    console.print(
+        Panel(
+            "[bold blue]Research & Report Crew[/bold blue]\n\n"
+            "This tool will search a corpus of 15 foundational AI agent papers\n"
+            "and generate a literature review on your research question.",
+            title="Welcome",
+        )
+    )
 
     console.print("\n[bold]Example questions:[/bold]")
     for i, q in enumerate(EXAMPLE_QUESTIONS, 1):
@@ -86,25 +88,15 @@ def main():
     parser = argparse.ArgumentParser(
         description="Research & Report Crew - Generate literature reviews from AI agent papers"
     )
+    parser.add_argument("question", nargs="?", help="Research question to investigate")
     parser.add_argument(
-        "question",
-        nargs="?",
-        help="Research question to investigate"
+        "--interactive", "-i", action="store_true", help="Run in interactive mode"
     )
     parser.add_argument(
-        "--interactive", "-i",
-        action="store_true",
-        help="Run in interactive mode"
+        "--example", "-e", action="store_true", help="Run with an example question"
     )
     parser.add_argument(
-        "--example", "-e",
-        action="store_true",
-        help="Run with an example question"
-    )
-    parser.add_argument(
-        "--no-save",
-        action="store_true",
-        help="Don't save the report to a file"
+        "--no-save", action="store_true", help="Don't save the report to a file"
     )
 
     args = parser.parse_args()
@@ -123,17 +115,21 @@ def main():
 
     # Display header
     console.print("\n")
-    console.print(Panel(
-        f"[bold]Research Question:[/bold]\n{question}",
-        title="Starting Research Crew",
-        border_style="blue"
-    ))
+    console.print(
+        Panel(
+            f"[bold]Research Question:[/bold]\n{question}",
+            title="Starting Research Crew",
+            border_style="blue",
+        )
+    )
     console.print("\n")
 
     # Run the crew
     try:
         console.print("[bold]Running research crew...[/bold]\n")
-        console.print("[dim]This may take a few minutes. Watch the agent reasoning below.[/dim]\n")
+        console.print(
+            "[dim]This may take a few minutes. Watch the agent reasoning below.[/dim]\n"
+        )
         console.print("=" * 60 + "\n")
 
         report = run_research(question)
@@ -142,11 +138,9 @@ def main():
         console.print("\n[bold green]Research Complete![/bold green]\n")
 
         # Display the report
-        console.print(Panel(
-            Markdown(report),
-            title="Literature Review",
-            border_style="green"
-        ))
+        console.print(
+            Panel(Markdown(report), title="Literature Review", border_style="green")
+        )
 
         # Save the report
         if not args.no_save:
@@ -155,7 +149,9 @@ def main():
 
     except NotImplementedError as e:
         console.print(f"\n[red]Not Implemented: {e}[/red]")
-        console.print("\n[yellow]You need to implement the agents, tasks, and crew first![/yellow]")
+        console.print(
+            "\n[yellow]You need to implement the agents, tasks, and crew first![/yellow]"
+        )
         console.print("See the TODO comments in:")
         console.print("  - agents/*.py")
         console.print("  - tasks/task_definitions.py")
@@ -167,7 +163,9 @@ def main():
     except Exception as e:
         console.print(f"\n[red]Error running research crew: {e}[/red]")
         console.print("[dim]Check that your environment is set up correctly.[/dim]")
-        console.print("[dim]Run 'python scripts/verify_setup.py' to diagnose issues.[/dim]")
+        console.print(
+            "[dim]Run 'python scripts/verify_setup.py' to diagnose issues.[/dim]"
+        )
         sys.exit(1)
 
 

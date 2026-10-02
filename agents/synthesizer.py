@@ -1,7 +1,7 @@
 """
 Synthesizer Agent
 
-TODO: Implement this agent that analyzes collected sources to identify
+DONE: Implement this agent that analyzes collected sources to identify
 themes, agreements, contradictions, and gaps in the literature.
 
 Hints:
@@ -16,16 +16,17 @@ load_dotenv()
 
 from crewai import Agent
 
-# TODO: Create the synthesizer agent
-#
-# synthesizer = Agent(
-#     role="...",
-#     goal="...",
-#     backstory="...",
-#     tools=[],
-#     verbose=True,
-#     memory=True,
-# )
+# DONE: Create the synthesizer agent
 
-# Placeholder - replace with your implementation
-synthesizer = None
+synthesizer = Agent(
+    role="Synthesizer — puts it all together",
+    goal="Look across all the paper excerpts the hunter pulled in, and figure out where the field actually agrees, where it doesn't, what trade-offs people are making, and what's still wide open.",
+    backstory=(
+        "You are a senior AI research scientist known for comprehensive literature reviews and high level analyses. "
+        "You connect theoretical foundations with modern LLM-based agent frameworks. "
+        "You look beyond scattered facts to identify recurring paradigms, reconcile conflicting approaches, evaluate trade-offs, and spotlight unsolved research challenges."
+    ),
+    tools=[],
+    verbose=True,
+    memory=False,
+)

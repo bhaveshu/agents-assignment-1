@@ -1,7 +1,7 @@
 """
 Query Expander Agent
 
-TODO: Implement this agent that transforms a broad research question
+DONE: Implement this agent that transforms a broad research question
 into a comprehensive search strategy with sub-questions, keywords,
 and search angles.
 
@@ -17,16 +17,19 @@ load_dotenv()
 
 from crewai import Agent
 
-# TODO: Create the query_expander agent
-#
-# query_expander = Agent(
-#     role="...",
-#     goal="...",
-#     backstory="...",
-#     tools=[],
-#     verbose=True,
-#     memory=True,
-# )
+# DONE: Create the query_expander agent
 
-# Placeholder - replace with your implementation
-query_expander = None
+query_expander = Agent(
+    role="Research Query Strategist",
+    goal="Understand the question being asked and deconsuruct it into structrued subquestions, technical keywords and different points of view for academic literature review",
+    backstory=(
+        "You are an expert academic research professor and strategist specializing in artificial "
+        "intelligence and autonomous agents. Your expertise is in taking high-level, ambiguous questions "
+        "and breaking them down into easy to understand concepts, architectural mechanisms, and domain-specific "
+        "terminology. Your structured query plans ensure literature searches capture both theoretical foundations "
+        "and cutting-edge implementations."
+    ),
+    tools=[],
+    verbose=True,
+    memory=False,
+)
