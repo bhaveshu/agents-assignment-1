@@ -22,7 +22,25 @@ _collection = None
 _embedding_provider = None
 
 COLLECTION_NAME = "agentic_ai_papers"
-
+# Cache for paper metadata (authors, year, title) from paper_index.json so that the LLM doesn't hallucinate
+_paper_index_cache = None
+def _get_paper_metadata() -> dict[str, dict]:
+    """Load and cache paper metadata from paper_index.json."""
+    global _paper_index_cache
+    if _paper_index_cache is None:
+        index_path = settings.papers_path / "paper_index.json"
+        if index_path.exists():
+            import json
+            try:
+                with open(index_path) as f:
+                    data = json.load(f)
+                    _paper_index_cache = {p["id"]: p for p in data.get("papers", [])}
+            except Exception as e:
+                logger.warning(f"Failed to load paper_index.json: {e}")
+                _paper_index_cache = {}
+        else:
+            _paper_index_cache = {}
+    return _paper_index_cache
 
 def _get_collection():
     """Get or create the ChromaDB collection."""
@@ -60,7 +78,7 @@ def _get_collection():
 
 
 def _format_results(results: dict, k: int) -> str:
-    """Format ChromaDB results into readable output."""
+    """Format ChromaDB results into readable output and add author metadata."""
     if not results or not results.get("documents"):
         return "No relevant passages found."
 
@@ -69,6 +87,7 @@ def _format_results(results: dict, k: int) -> str:
     distances = results["distances"][0]
 
     output_lines = [f"Found {min(len(documents), k)} relevant passages:\n"]
+    paper_metadata = _get_paper_metadata()
 
     for i, (doc, meta, dist) in enumerate(zip(documents, metadatas, distances), 1):
         # Convert distance to similarity score (ChromaDB uses L2 distance)
@@ -79,10 +98,19 @@ def _format_results(results: dict, k: int) -> str:
         section = meta.get("section", "unknown")
         paper_title = meta.get("paper_title", "unknown")
 
+        # Pull exact author and publication year metadata
+        info = paper_metadata.get(paper_id, {})
+        authors = info.get("authors", [])
+        year = info.get("year", "")
+        authors_str = ", ".join(authors) if authors else "Unknown"
+        year_str = f" ({year})" if year else ""
+
         output_lines.append(
             f"[{i}] Source: {paper_id} | Section: {section} | Relevance: {similarity:.2f}"
         )
         output_lines.append(f"    Title: {paper_title}")
+        #Add the authors data
+        output_lines.append(f"    Authors: {authors_str}")
 
         # Truncate long documents for display
         doc_display = doc[:500] + "..." if len(doc) > 500 else doc

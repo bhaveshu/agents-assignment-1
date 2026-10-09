@@ -1,7 +1,7 @@
 """
 Task Definitions for Research Crew
 
-TODO: Define the four sequential tasks:
+DONE: Define the four sequential tasks:
 1. Query Expansion - Break down the research question
 2. Source Hunting - Search the paper corpus
 3. Synthesis - Analyze and synthesize findings
@@ -28,7 +28,7 @@ def create_research_tasks(research_question: str) -> list[Task]:
     Returns:
         List of 4 tasks in execution order
 
-    TODO: Implement the four tasks below
+    DONE: Implement the four tasks below
     """
 
     # =========================================
@@ -62,11 +62,11 @@ def create_research_tasks(research_question: str) -> list[Task]:
             "1. Use the `search_papers` tool to search the 15-paper corpus using the suggested queries. "
             "2. Query for each sub-question and inspect retrieved passages. "
             "3. Collect 8-12 high-relevance, evidence-rich excerpts across different papers. "
-            "4. For each excerpt, note the paper ID, title, section, and key technical takeaways."
+            "4. For each excerpt, note the paper ID, exact title, author names, publication year, section, and key technical takeaways."
         ),
         agent=source_hunter,
         context=[expand_task],
-        expected_output="A curated catalog of 8-12 relevant paper excerpts with citations (paper ID, title, section) and concise summaries of the empirical evidence or theoretical concepts."
+        expected_output="A curated catalog of 8-12 relevant paper excerpts with citations (paper ID, title, authors, year, section) and concise summaries of empirical evidence and metrics.",
     )
 
     # =========================================
@@ -107,17 +107,15 @@ def create_research_tasks(research_question: str) -> list[Task]:
             "## 6. Open Challenges & Future Directions\n"
             "## 7. Conclusion\n"
             "## 8. References (list all cited papers from the corpus)\n"
+            "CRITICAL CITATION AND GROUNDING RULES:\n"
+            "- For in-text citations and Section 8 (References), use ONLY the exact author names and publication years provided in the retrieved paper sources. Do NOT invent, hallucinate, or fabricate authors or co-authors. If author names are missing, cite by exact paper title.\n"
+            "- Verify all quantitative benchmark numbers and metrics directly against the excerpts (e.g. exact ALFWorld or HotpotQA accuracy figures).\n"
             "Ensure rigorous academic tone and proper attribution throughout."
         ),
         agent=report_writer,
         context=[expand_task, search_task, synthesis_task],
-        expected_output="A complete, polished academic literature review in Markdown format featuring all 8 requested sections with substantive content and rigorous citations."
+        expected_output="A complete, polished academic literature review in Markdown format featuring all 8 requested sections with substantive content, verified empirical metrics, and rigorous citations matching the paper corpuus."
     )
 
     # DONE: Return your tasks in order
     return [expand_task, search_task, synthesis_task, report_task]
-
-    # Placeholder - replace with your implementation
-    raise NotImplementedError(
-        "TODO: Implement create_research_tasks() in tasks/task_definitions.py"
-    )

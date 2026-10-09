@@ -1,7 +1,7 @@
 """
 Research Crew Configuration
 
-TODO: Configure and run the Research & Report Crew.
+DONE: Configure and run the Research & Report Crew.
 
 This module should:
 1. Import your agents from the agents module
@@ -12,7 +12,7 @@ This module should:
 
 # Load environment variables BEFORE importing crewai
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(override=True)
 
 from crewai import Crew, Process
 from agents import query_expander, source_hunter, synthesizer, report_writer
@@ -41,7 +41,7 @@ def create_research_crew(research_question: str) -> Crew:
         tasks=tasks,
         process=Process.sequential,
         verbose=True,
-        memory=True,
+        memory=False,
     )
     return crew
 
@@ -56,9 +56,9 @@ def run_research(research_question: str) -> str:
     Returns:
         The final literature review as a string
 
-    TODO: Implement this function
+    Done: Implement this function
     """
-    # TODO: Create the crew and run it
+    # Done: Create the crew and run it
     crew = create_research_crew(research_question)
     result = crew.kickoff()
     return str(result)
